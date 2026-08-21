@@ -2,7 +2,7 @@
 
 A browser-based tool for the Level Design team to visually explore player telemetry from **LILA BLACK** — see where players move, fight, loot, and die to the storm, across all three maps.
 
-**Live URL:** _[add your deployed URL here after deploying — see below]_
+**Live URL:** https://varialmap.netlify.app
 
 ![screenshot placeholder](docs/screenshot.png)
 
