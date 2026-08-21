@@ -11,24 +11,26 @@ export default function Timeline({ duration, currentTime, isPlaying, speed, onSe
     function tick(now) {
       const dt = now - lastTickRef.current
       lastTickRef.current = now
+
       // Playback maps the match's relative tick-range onto real seconds:
       // the underlying `ts` values in this dataset span well under a
       // second per match (a compressed/synthetic time index rather than
       // true wall-clock ms -- see ARCHITECTURE.md), so we scale by `speed`
       // to make scrubbing feel natural instead of replaying at "real" speed.
-      const next = currentTime + dt * speed
-      if (next >= duration) {
-        onSeek(duration)
-        onTogglePlay(false)
-      } else {
-        onSeek(next)
+      onSeek((prev) => {
+        const next = prev + dt * speed
+        if (next >= duration) {
+          onTogglePlay(false)
+          return duration
+        }
         rafRef.current = requestAnimationFrame(tick)
-      }
+        return next
+      })
     }
+
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying, speed, disabled])
+  }, [isPlaying, speed, disabled, duration, onSeek, onTogglePlay])
 
   function fmt(ms) {
     return `${Math.round(ms)} / ${Math.round(duration)}`
